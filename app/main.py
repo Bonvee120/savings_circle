@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.routes.auth import router as auth_router
 from app.routes.bank import router as bank_router
@@ -77,3 +78,8 @@ app.include_router(circles_router)
 app.include_router(contributions_router)
 app.include_router(payouts_router)
 app.include_router(bank_router)
+
+# The browser client is deliberately served separately from the API routes.  It
+# talks to the deployed API in production, while this mount makes the same UI
+# convenient to preview alongside a local development server.
+app.mount("/", StaticFiles(directory="app/static", html=True), name="frontend")
